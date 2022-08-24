@@ -1,13 +1,26 @@
 app.controller('indexController', ['$scope', 'indexFactory', ($scope, indexFactory) => {
-    const connectionsOptions = {
-        reconnectionAttemps: 3,
-        reconnectionDelay: 600
+    $scope.init = () => {
+        const username = prompt('Please enter username');
+
+        if(username)
+            initSocket(username);
+        else
+            return false;
     };
 
-    indexFactory.connectSocket('http://localhost:3000', connectionsOptions)
-    .then((socket) => {
-        console.log("baglanti gerceklesti", socket);
-    }).catch((error) =>{
-        console.log(error);
-    });
+    function initSocket(username) {
+        const connectionsOptions = {
+            reconnectionAttemps: 3,
+            reconnectionDelay: 600
+        };
+    
+        indexFactory.connectSocket('http://localhost:3000', connectionsOptions)
+        .then((socket) => {
+            socket.emit('newUser', { username})
+        }).catch((error) =>{
+            console.log(error);
+        });
+
+    }
+    
 }])
